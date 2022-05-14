@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class User {
 
     private int id;
-
+    @Email
     @NotNull
     private String email;
     @Size(max = 30, message = "Имя не может быть больше 30 символов")
