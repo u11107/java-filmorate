@@ -31,6 +31,7 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
+        log.error(String.valueOf(user));
         validationUser(user); // проверка даты рождения пользователя
         user.setId(id++);
         log.info("Пользователь {} успешно добавлен", user.getLogin());
