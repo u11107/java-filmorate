@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Data
+@AllArgsConstructor
 public class User {
 
     private int id;
@@ -13,22 +16,13 @@ public class User {
     private String email;
     @NotNull
     @Size(max = 30, message = "Имя не может быть больше 30 символов")
-    @Min(value = 0, message = "Имя не может начинается с отрицательного значения")
     @NotBlank
     private String name;
     @NotBlank
     @NotNull
     @Size(max = 30, message = "Имя не может быть больше 30 символов")
-    @Min(value = 0, message = "Имя не может начинается с отрицательного значения")
     private String login;
-    @Min(value = 0, message = "нельзя ввести отрицательную дату рождения")
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
-    public User(int id, String email, String name, String login, LocalDateTime birthday) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.login = login;
-        this.birthday = birthday;
-    }
+
 }

@@ -47,7 +47,7 @@ public class UserController {
     }
 
     public  void validationUser(User user) {
-        if (user.getBirthday().isAfter(ChronoLocalDateTime.from(LocalDate.now()))) {
+        if (user.getBirthday().isBefore(LocalDate.now())) {
             log.warn("Вы ввели не верную дату рождения");
             throw new ValidationException("Вы ввели не верную дату рождения");
         }
