@@ -10,11 +10,16 @@ import java.time.LocalDateTime;
 public class User {
 
     private int id;
-    @NotNull
+    @Email(message = "Введите email формата emeil@e")
+
     private String email;
-    @NotNull
+
+
     private String name;
-    @NotNull
+
+
     private String login;
     private LocalDate birthday;
+
+
 }
