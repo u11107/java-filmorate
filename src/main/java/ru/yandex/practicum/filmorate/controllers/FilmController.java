@@ -18,7 +18,7 @@ public class FilmController {
     private final Map<Integer, Film> movie = new HashMap<>();
     @Getter
     private static final LocalDate EARLY_DATE = LocalDate.of(1900, 1, 1);
-    private Integer id;
+    private Integer id = 1;
 
     @GetMapping("/films")
     public Map getAllFilm() throws ValidationException {
