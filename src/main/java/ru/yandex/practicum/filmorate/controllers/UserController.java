@@ -38,7 +38,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping(value = "/users")
+    @PutMapping("/users")
     public String update(@Valid @RequestBody User user) throws ValidationException {
         log.error(String.valueOf(user));
         if (users.containsKey(user.getId())) {
