@@ -10,17 +10,14 @@ import java.time.LocalDateTime;
 public class User {
 
     private int id;
-    @Email
-    @NotNull
+    @Email(message = "Введите email формата emeil@e")
     @NotBlank
     private String email;
-
-    @NotNull
+    @Size(max = 30, message = "Имя не может быть больше 30 символов")
     @NotBlank
     private String name;
-    @NotNull
     @NotBlank
-
+    @Size(max = 30, message = "Имя не может быть больше 30 символов")
     private String login;
     private LocalDate birthday;
 
