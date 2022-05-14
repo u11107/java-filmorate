@@ -15,12 +15,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
+    UserController userController;
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -40,5 +42,16 @@ public class UserControllerTest {
         String json = objectMapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void  createUpdateUserTest() throws Exception {
+        User user = new User(2,"hdhdkfgfg","name", "login",
+                LocalDate.of(2022,10,12));
+        User user1 = new User(2,"eeei@inbox.ru","NAME", "login",
+                LocalDate.of(2022,10,12));
+        String json = objectMapper.writeValueAsString(user1);
+        this.mockMvc.perform(put("/users").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

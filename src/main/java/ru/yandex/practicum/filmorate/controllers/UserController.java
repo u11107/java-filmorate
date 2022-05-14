@@ -25,7 +25,7 @@ public class UserController {
 
     @GetMapping("/users")
     public Map getAllFilm() throws ValidationException {
-        log.info("Количство фильмов {}", users.size());
+        log.info("Количство пользователей {}", users.size());
         return users;
     }
 
@@ -39,12 +39,17 @@ public class UserController {
     }
 
     @PutMapping(value = "/users")
-    public User update(@Valid @RequestBody User user) throws ValidationException {
+    public String update(@Valid @RequestBody User user) throws ValidationException {
+        log.error(String.valueOf(user));
+        if (users.containsKey(user.getId())) {
+            System.out.println("Такого пользователя  не существует");
+        }
         validationUser(user);
         users.put(user.getId(), user);
         log.info("Добавлен пользователь");
-        return user;
+        return "Пользователь обнавлен";
     }
+
 
     public  void validationUser(User user) {
         if (user.getBirthday().isBefore(LocalDate.now())) {
