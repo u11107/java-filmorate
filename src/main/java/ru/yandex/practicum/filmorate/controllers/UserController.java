@@ -39,15 +39,12 @@ public class UserController {
     }
 
     @PutMapping(value = "/users")
-    public String update(@Valid @RequestBody User user) throws ValidationException {
+    public User update(@Valid @RequestBody User user) throws ValidationException {
         log.error(String.valueOf(user));
-        if (!users.containsKey(user.getId())) {
-            System.out.println("Такого пользователя  не существует");
-        }
         validationUser(user);
         users.put(user.getId(), user);
         log.info("Добавлен пользователь");
-        return "Пользователь обновлен";
+        return user;
     }
 
 

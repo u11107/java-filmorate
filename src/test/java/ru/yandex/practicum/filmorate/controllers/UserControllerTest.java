@@ -45,7 +45,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void  createUpdateUserTest() throws Exception {
+    void  updateUserTest() throws Exception {
         User user = new User(2,"hdhdkfgfg","name", "login",
                 LocalDate.of(2022,10,12));
         User user1 = new User(2,"eeei@inbox.ru","NAME", "login",
