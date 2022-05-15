@@ -1,18 +1,15 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.User;
-
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,17 +44,6 @@ public class UserController {
         log.info("Добавлен пользователь");
         return user;
     }
-
-
-//    public  void validationUser(User user) {
-//        if (user.getBirthday().isBefore(LocalDate.now())) {
-//            log.warn("Вы ввели не верную дату рождения");
-//            throw new ValidationException("Вы ввели не верную дату рождения");
-//        }
-//        if (user.getName() == null || user.getName().isBlank()) {
-//            user.setName(user.getLogin());
-//        }
-//    }
 
     public void validate(User user)  {
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
