@@ -14,6 +14,7 @@ public class User {
     private String email;
     @Size(max = 30, message = "Имя может быть не больше тридцати символов")
     private String name;
+    @Size(max = 30, message = "Имя может быть не больше тридцати символов")
     private String login;
     private LocalDate birthday;
 
