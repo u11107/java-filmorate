@@ -9,11 +9,10 @@ import java.time.LocalDate;
 public class User {
 
     private int id;
-    @Email(message = "Введите email формата emeil@e")
+
     private String email;
-    @NotNull
+
     private String name;
-    @NotEmpty
     private String login;
     private LocalDate birthday;
 

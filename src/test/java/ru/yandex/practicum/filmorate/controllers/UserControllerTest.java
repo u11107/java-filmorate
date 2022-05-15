@@ -32,6 +32,7 @@ public class UserControllerTest {
     void createValidUserTest() throws Exception {
         User user = new User(2,"eeei@inbox.ru","name", "login", LocalDate.of(2022,10,12));
         String json = objectMapper.writeValueAsString(user);
+        System.out.println(json);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
