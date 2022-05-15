@@ -8,10 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
+
 import java.time.LocalDate;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -24,8 +24,8 @@ public class FilmControllerTest {
 
     @Test
     void shouldCreateValidFilmTest() throws Exception {
-        Film film = new Film(2,"name","description",
-                LocalDate.of(2022,1,12),123);
+        Film film = new Film(2, "name", "description",
+                LocalDate.of(2022, 1, 12), 123);
         String json = objectMapper.writeValueAsString(film);
         this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -33,8 +33,8 @@ public class FilmControllerTest {
 
     @Test
     void shouldGetAllFilm() throws Exception {
-        Film film = new Film(2,"name","description",
-                LocalDate.of(2022,1,12),123);
+        Film film = new Film(2, "name", "description",
+                LocalDate.of(2022, 1, 12), 123);
         String json = objectMapper.writeValueAsString(film);
         this.mockMvc.perform(get("/films").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -42,11 +42,11 @@ public class FilmControllerTest {
 
     @Test
     void shouldPutFilm() throws Exception {
-        Film film = new Film(2,"name","description",
-                LocalDate.of(2022,1,12),123);
+        Film film = new Film(2, "name", "description",
+                LocalDate.of(2022, 1, 12), 123);
         String json = objectMapper.writeValueAsString(film);
-        Film film1 = new Film(2,"name","description",
-                LocalDate.of(2022,1,12),123);
+        Film film1 = new Film(2, "name", "description",
+                LocalDate.of(2022, 1, 12), 123);
         String json1 = objectMapper.writeValueAsString(film1);
         this.mockMvc.perform(put("/films").content(json1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -54,8 +54,8 @@ public class FilmControllerTest {
 
     @Test
     void shouldCreateInValidFilmNameTest() throws Exception {
-        Film film = new Film(2,"","description",
-                LocalDate.of(2022,1,12),123);
+        Film film = new Film(2, "", "description",
+                LocalDate.of(2022, 1, 12), 123);
         String json = objectMapper.writeValueAsString(film);
         this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -63,8 +63,17 @@ public class FilmControllerTest {
 
     @Test
     void shouldCreateInValidFilmDescriptionTest() throws Exception {
-        Film film = new Film(2,"Name","",
-                LocalDate.of(2022,1,12),123);
+        Film film = new Film(2, "Name", "",
+                LocalDate.of(2022, 1, 12), 123);
+        String json = objectMapper.writeValueAsString(film);
+        this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldCreateInValidFilmDataTest() throws Exception {
+        Film film = new Film(2, "Name", "",
+                LocalDate.of(2023, 1, 12), 123);
         String json = objectMapper.writeValueAsString(film);
         this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
