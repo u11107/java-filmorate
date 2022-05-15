@@ -1,57 +1,58 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.time.Month;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 public class UserControllerTest {
 
-    UserController userController;
     @Autowired
-    MockMvc mockMvc;
-    @Autowired
-    ObjectMapper objectMapper;
+    private UserController userController;
 
     @Test
-    void createValidUserTest() throws Exception {
-        User user = new User(2,"eeei@inbox.ru","name", "login", LocalDate.of(2022,10,12));
-        String json = objectMapper.writeValueAsString(user);
-        this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+    void shouldValidationExceptionLoginIsBlank() {
+        User user = new User(2,"test@test.ru", "", "name",
+                LocalDate.of(1987, Month.MAY,3));
+        assertThrows(ValidationException.class, () -> userController.validate(user));
     }
 
     @Test
-    void createUserInValidEmail() throws Exception {
-        User user = new User(2,"hdhdkfgfg","name", "login", LocalDate.of(2022,10,12));
-        String json = objectMapper.writeValueAsString(user);
-        this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+    void shouldValidationExceptionLoginContainsSpace() {
+        User user = new User(2,"test@test.ru", "login login", "name",
+                LocalDate.of(1987, Month.MAY,3));
+        assertThrows(ValidationException.class, () -> userController.validate(user));
     }
 
     @Test
-    void  updateUserTest() throws Exception {
-        User user = new User(2,"hdhdkfgfg","name", "login",
-                LocalDate.of(2022,10,12));
-        User user1 = new User(2,"eeei@inbox.ru","NAME", "login",
-                LocalDate.of(2022,10,12));
-        String json = objectMapper.writeValueAsString(user1);
-        this.mockMvc.perform(put("/users").content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+    void shouldUseLoginIfNameIsBlank() {
+        User user = new User(2,"test@test.ru", "login", "",
+                LocalDate.of(1987, Month.MAY,3));
+        userController.validate(user);
+        assertEquals(user.getName(), user.getLogin(), "Не используется login в качестве name");
+    }
+
+    @Test
+    void shouldValidationExceptionIfBirthDayIsFuture() {
+        User user = new User(2,"test@test.ru", "login", "name",
+                LocalDate.of(2023, Month.MAY,3));
+        assertThrows(ValidationException.class, () -> userController.validate(user));
+    }
+
+    @Test
+    void shouldValidationExceptionWrongEmailFormat() {
+        User user = new User(2,"test.test.ru", "login", "name",
+                LocalDate.of(2023, Month.MAY,3));
+        User userBlankEmail = new User(3,"", "login", "name",
+                LocalDate.of(2023, Month.MAY,3));
+        assertThrows(ValidationException.class, () -> userController.validate(user));
+        assertThrows(ValidationException.class, () -> userController.validate(userBlankEmail));
     }
 }
