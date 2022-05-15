@@ -45,7 +45,7 @@ public class UserController {
         return user;
     }
 
-    public void validate(User user)  {
+    public void validate(User user) {
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.error("Логин {} содержит пробелы или пустой", user.getLogin());
             throw new ValidationException("Логин содержит пробелы или пустой");

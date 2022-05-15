@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.User;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,21 +33,39 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUserInValidEmail() throws Exception {
-        User user = new User(2,"hdhdkfgfg","name", "login", LocalDate.of(2022,10,12));
+    void shouldCreateUserInValidEmail() throws Exception {
+        User user = new User(2,"hdhdkfgfg","name", "login", LocalDate.of(2022,1,12));
         String json = objectMapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void  updateUserTest() throws Exception {
-        User user = new User(2,"hdhdkfgfg","name", "login",
+    void shouldCreateUserInValidName() throws Exception {
+        User user = new User(2,"email@inbox.ru","", "login", LocalDate.of(2022,1,12));
+        String json = objectMapper.writeValueAsString(user);
+        this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldCreateUserInValidLogin() throws Exception {
+        User user = new User(2,"email@inbox.ru","name", "",
                 LocalDate.of(2022,1,12));
-        User user1 = new User(2,"eeei@inbox.ru","NAME", "login",
-                LocalDate.of(2022,2,12));
-        String json = objectMapper.writeValueAsString(user1);
-        this.mockMvc.perform(put("/users").content(json).contentType(MediaType.APPLICATION_JSON))
+        String json = objectMapper.writeValueAsString(user);
+        this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldPutUser() throws Exception {
+        User user = new User(2,"email@inbox.ru","name", "login",
+                LocalDate.of(2022,1,12));
+        String json = objectMapper.writeValueAsString(user);
+        User user1 = new User(2,"email@inbox.ru","NAME", "login",
+                LocalDate.of(2022,1,12));
+        String json1 = objectMapper.writeValueAsString(user1);
+        this.mockMvc.perform(put("/users").content(json1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }

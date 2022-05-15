@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-
 import java.time.LocalDate;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -54,5 +50,23 @@ public class FilmControllerTest {
         String json1 = objectMapper.writeValueAsString(film1);
         this.mockMvc.perform(put("/films").content(json1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldCreateInValidFilmNameTest() throws Exception {
+        Film film = new Film(2,"","description",
+                LocalDate.of(2022,1,12),123);
+        String json = objectMapper.writeValueAsString(film);
+        this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldCreateInValidFilmDescriptionTest() throws Exception {
+        Film film = new Film(2,"Name","",
+                LocalDate.of(2022,1,12),123);
+        String json = objectMapper.writeValueAsString(film);
+        this.mockMvc.perform(post("/films").content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

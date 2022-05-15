@@ -21,7 +21,7 @@ public class FilmController {
     private Integer id = 1;
 
     @GetMapping("/films")
-    public Map getAllFilm() throws ValidationException {
+    public Map<Integer, Film> getAllFilm() throws ValidationException {
         log.info("Количство фильмов {}", movie.size());
         return movie;
     }
