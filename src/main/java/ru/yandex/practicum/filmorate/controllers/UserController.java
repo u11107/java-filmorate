@@ -71,7 +71,7 @@ public class UserController {
             log.error("Ошибка формата email '{}'", user.getEmail());
             throw new ValidationException("Ошибка формата email");
         }
-        if (user.getBirthday().isBefore(LocalDate.now())) {
+        if (user.getBirthday().isAfter(LocalDate.now())) {
             log.error("Ошибка даты рождения '{}'", user.getBirthday());
             throw new ValidationException("Ошибка в поле дата рождения");
         }
