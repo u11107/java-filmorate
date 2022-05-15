@@ -28,7 +28,7 @@ public class FilmController {
 
     @PostMapping(value = "/films")
     public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
-        validationFilm(film);
+        validation(film);
         film.setId(id++);
         movie.put(film.getId(), film);
         log.info("Добавлен новый фильм {}, id={}", film.getName(), film.getId());
@@ -37,13 +37,13 @@ public class FilmController {
 
     @PutMapping(value = "/films")
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        validationFilm(film);
+        validation(film);
         movie.put(film.getId(), film);
         log.info("Фильм перзеписан");
         return film;
     }
 
-    public void validationFilm(Film film) {
+    public void validation(Film film) {
         if (film.getReleaseDate().isBefore(getEARLY_DATE())) {
             log.warn("Произошла ошибка  при создании фильма");
             throw new ValidationException("Тогда еще не было фильмов");

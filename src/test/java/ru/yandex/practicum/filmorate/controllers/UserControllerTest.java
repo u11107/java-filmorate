@@ -30,7 +30,8 @@ public class UserControllerTest {
 
     @Test
     void createValidUserTest() throws Exception {
-        User user = new User(2,"eeei@inbox.ru","name", "login", LocalDate.of(2022,10,12));
+        User user = new User(2,"eeei@inbox.ru","name", "login",
+                LocalDate.of(2022,1,12));
         String json = objectMapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -47,9 +48,9 @@ public class UserControllerTest {
     @Test
     void  updateUserTest() throws Exception {
         User user = new User(2,"hdhdkfgfg","name", "login",
-                LocalDate.of(2022,10,12));
+                LocalDate.of(2022,1,12));
         User user1 = new User(2,"eeei@inbox.ru","NAME", "login",
-                LocalDate.of(2022,10,12));
+                LocalDate.of(2022,2,12));
         String json = objectMapper.writeValueAsString(user1);
         this.mockMvc.perform(put("/users").content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
