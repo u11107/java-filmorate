@@ -43,7 +43,8 @@ public class UserControllerTest {
 
     @Test
     void shouldCreateUserInValidName() throws Exception {
-        User user = new User(2,"email@inbox.ru","", "login",
+        User user = new User(12,"email@inbox.ru","name0123456789101112131415161718192021222324drhhdrh",
+                "login",
                 LocalDate.of(2022,1,12));
         String json = objectMapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))
@@ -52,7 +53,7 @@ public class UserControllerTest {
 
     @Test
     void shouldCreateUserInValidLogin() throws Exception {
-        User user = new User(2,"email@inbox.ru","name", "",
+        User user = new User(2,"email@inbox.ru","name", "0123456789101112131415161718192021222324",
                 LocalDate.of(2022,1,12));
         String json = objectMapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(json).contentType(MediaType.APPLICATION_JSON))

@@ -19,6 +19,4 @@ public class User {
     @Size(max = 30, message = "Имя может быть не больше тридцати символов")
     private String login;
     private LocalDate birthday;
-
-
 }

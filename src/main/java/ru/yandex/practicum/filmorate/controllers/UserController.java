@@ -1,7 +1,11 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -17,14 +21,13 @@ public class UserController {
     int id = 1;
 
     @GetMapping("/users")
-    public Map getAllFilm() throws ValidationException {
+    public Map<Integer, User> getAllFilm() throws ValidationException {
         log.info("Количство пользователей {}", users.size());
         return users;
     }
 
     @PostMapping(value = "/users")
     public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        log.error(String.valueOf(user));
         validate(user); // проверка даты рождения пользователя
         user.setId(id++);
         log.info("Пользователь {} успешно добавлен", user.getLogin());
@@ -50,7 +53,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.error("Ошибка формата email '{}'", user.getEmail());
+            log.error("Ошибка  email '{}'", user.getEmail());
             throw new ValidationException("Ошибка формата email");
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
