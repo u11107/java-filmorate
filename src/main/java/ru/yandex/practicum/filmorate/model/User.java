@@ -24,8 +24,6 @@ public class User {
     private String name;
     @Size(max = 30, message = "Имя может быть не больше тридцати символов")
     private String login;
-    @Past(message = "Вы из будущего??")
-    private LocalDate birthday;
     private Set<Integer> friends;
 
     public User(int id, String email, String name, String login, LocalDate birthday) {
