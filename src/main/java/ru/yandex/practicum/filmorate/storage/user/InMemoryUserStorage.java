@@ -19,10 +19,10 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User createUser(User user) throws ValidationException {
         validate(user);
-            user.setId(id);
-            users.put(id, user);
-            id++;
-            log.info("Пользователь {} добавлен", user);
+        user.setId(id);
+        users.put(id, user);
+        id++;
+        log.info("Пользователь {} добавлен", user);
         return user;
     }
 
@@ -33,19 +33,19 @@ public class InMemoryUserStorage implements UserStorage {
             throw new ValidationException("пользователь " + user.getId());
         }
         User updateUser = users.get(user.getId());
-            updateUser.setEmail(user.getEmail());
-            updateUser.setLogin(user.getLogin());
-            updateUser.setBirthday(user.getBirthday());
-            updateUser.setName(user.getName());
-            users.put(user.getId(), updateUser);
-            log.info("Данные о пользователе {} обновлены", updateUser);
-            return user;
+        updateUser.setEmail(user.getEmail());
+        updateUser.setLogin(user.getLogin());
+        updateUser.setBirthday(user.getBirthday());
+        updateUser.setName(user.getName());
+        users.put(user.getId(), updateUser);
+        log.info("Данные о пользователе {} обновлены", updateUser);
+        return user;
     }
 
     @Override
     public void deleteUsers() {
-       users.clear();
-       log.info("Все пользователи удалены");
+        users.clear();
+        log.info("Все пользователи удалены");
     }
 
     @Override
@@ -105,4 +105,5 @@ public class InMemoryUserStorage implements UserStorage {
 //        }
 //        return true;
 //    }
+    }
 }
