@@ -15,35 +15,6 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int id = 1;
 
-    private boolean checkValidData(User user) {
-        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.error("Введен пустой email или отсутствует символ @.");
-            throw new ValidationException("Email не может быть пустым");
-        }
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Введен пустой логин или логин содержит пробелы.");
-            throw new ValidationException("Логин не может быть пустым или содержать пробелы.");
-        }
-        if (user.getName().isBlank() || user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Введена дата рождения из будущего.");
-            throw new ValidationException("Дата рождения не может быть в будущем.");
-        }
-        return true;
-    }
-
-    private boolean validator(User user) {
-        if (checkValidData(user)) {
-            if (!users.containsKey(user.getId())) {
-                log.error("Введен неверный id.");
-                throw new ValidationException("Пользователя с id" + user.getId() + " нет.");
-            }
-        }
-        return true;
-    }
-
     public Map<Integer, User> getAllUsers() {
         return users;
     }
@@ -77,5 +48,34 @@ public class InMemoryUserStorage implements UserStorage {
     public void removeUser(Integer id) {
         users.remove(id);
         log.debug("Удален пользователь {}", id);
+    }
+
+    private boolean checkValidData(User user) {
+        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            log.error("Введен пустой email или отсутствует символ @.");
+            throw new ValidationException("Email не может быть пустым");
+        }
+        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.error("Введен пустой логин или логин содержит пробелы.");
+            throw new ValidationException("Логин не может быть пустым или содержать пробелы.");
+        }
+        if (user.getName().isBlank() || user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.error("Введена дата рождения из будущего.");
+            throw new ValidationException("Дата рождения не может быть в будущем.");
+        }
+        return true;
+    }
+
+    private boolean validator(User user) {
+        if (checkValidData(user)) {
+            if (!users.containsKey(user.getId())) {
+                log.error("Введен неверный id.");
+                throw new ValidationException("Пользователя с id" + user.getId() + " нет.");
+            }
+        }
+        return true;
     }
 }
