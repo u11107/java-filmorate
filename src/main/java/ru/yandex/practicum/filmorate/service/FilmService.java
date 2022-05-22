@@ -22,21 +22,21 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-//    public Map<Integer, Film> allFilms() {
-//        return filmStorage.getAllFilms();
-//    }
-//
-//    public Film add(Film film) {
-//        return filmStorage.addFilm(film);
-//    }
-//
-//    public Film updateFilm(Film film) {
-//        return filmStorage.updateFilm(film);
-//    }
-//
-//    public void removeFilm(Integer id) {
-//        filmStorage.removeFilm(id);
-//    }
+    public Map<Integer, Film> allFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public void removeFilm(Integer id) {
+        filmStorage.removeFilm(id);
+    }
 
     public void addLike(Integer filmId, Integer userId) {
         if (!filmStorage.getAllFilms().containsKey(filmId)) {
