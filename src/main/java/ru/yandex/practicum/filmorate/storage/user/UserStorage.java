@@ -6,22 +6,11 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Map;
 
 public interface UserStorage {
+    Map<Integer, User> allUsers();
 
-    //создания пользователя
-    User createUser(User user) throws ValidationException;
+    User add(User user);
 
-    //изменения данных пользователя
-    User updateUser(User user) throws ValidationException;
+    User update(User user);
 
-    //удаления всех пользователей
-    void deleteUsers();
-
-    //удаление пользователя по id
-    void getRemoveUserById(Integer id);
-
-    //получение пользователя по id
-    User getBiUserId(Integer id);
-
-    //получения всех пользователей
-    Map<Integer, User> getAllUsers();
+    void remove(Integer id);
 }

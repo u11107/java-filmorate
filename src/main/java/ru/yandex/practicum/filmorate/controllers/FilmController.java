@@ -1,36 +1,42 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-
 import java.util.Collection;
 
-@Slf4j
 @RequestMapping("/films")
 @RestController
-@RequiredArgsConstructor
 public class FilmController {
     private final FilmService filmService;
-    private final FilmStorage filmStorage;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping
     public Collection<Film> allFilms() {
-        return filmStorage.getAllFilms().values();
+        return filmService.allFilms().values();
     }
 
     @PostMapping
     public Film add(@RequestBody Film film) {
-        return filmStorage.createFilm(film);
+        return filmService.add(film);
     }
 
     @PutMapping
     public Film update(@RequestBody Film film) {
-        return filmStorage.updateFilm(film);
+        return filmService.update(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -50,6 +56,6 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable Integer id) {
-        return filmStorage.getFilmById(id);
+        return filmService.getFilm(id);
     }
 }

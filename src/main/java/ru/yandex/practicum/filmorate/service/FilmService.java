@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -8,41 +8,68 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
 
-    // добавление лайка
-    public void addLike(Integer filmId, Integer userId) {
-        if (!filmStorage.getAllFilms().containsKey(filmId)) {
-            throw new NotFoundException("фильм" + filmId);
-        }
-        filmStorage.getAllFilms().get(filmId).getLikes().add(userId);
+    @Autowired
+    public FilmService(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
     }
 
-    // удаление лайка
-    public void removeLike(Integer filmId, Integer userId) {
-        if (!filmStorage.getAllFilms().containsKey(filmId)) {
+    public Map<Integer, Film> allFilms() {
+        return filmStorage.allFilms();
+    }
+
+    public Film add(Film film) {
+        return filmStorage.add(film);
+    }
+
+    public Film update(Film film) {
+        return filmStorage.update(film);
+    }
+
+    public void remove(Integer id) {
+        filmStorage.remove(id);
+    }
+
+    public void addLike(Integer filmId, Integer userId) {
+        if (!filmStorage.allFilms().containsKey(filmId)) {
             throw new NotFoundException("фильм" + filmId);
         }
-        if (!filmStorage.getFilmById(filmId).getLikes().contains(userId)) {
+        filmStorage.allFilms().get(filmId).getLikes().add(userId);
+    }
+
+    public void removeLike(Integer filmId, Integer userId) {
+        if (!filmStorage.allFilms().containsKey(filmId)) {
+            throw new NotFoundException("фильм" + filmId);
+        }
+        if (!getFilm(filmId).getLikes().contains(userId)) {
             throw new NotFoundException("лайк пользователя " + userId);
         }
-        filmStorage.getAllFilms().get(filmId).getLikes().remove(userId);
+        filmStorage.allFilms().get(filmId).getLikes().remove(userId);
     }
 
-    //рейтинг 10 фильмов
     public Collection<Film> getTopTenFilms(Integer count) {
-        if (count > 0 && count < filmStorage.getAllFilms().size()) {
-            return filmStorage.getAllFilms().values().stream()
+        if (count > 0 && count < filmStorage.allFilms().size()) {
+            return filmStorage.allFilms().values().stream()
                     .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
                     .limit(count).collect(Collectors.toList());
         }
-        return filmStorage.getAllFilms().values().stream()
+        return filmStorage.allFilms().values().stream()
                 .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
-                .limit(filmStorage.getAllFilms().size()).collect(Collectors.toList());
+                .limit(filmStorage.allFilms().size()).collect(Collectors.toList());
+    }
+
+    public Film getFilm(Integer id) {
+        if (!filmStorage.allFilms().containsKey(id)) {
+            throw new NotFoundException("фильм" + id);
+        }
+        return filmStorage.allFilms().get(id);
     }
 }
