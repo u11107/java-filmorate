@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
-    private final LocalDate movieBirthday = LocalDate.of(1895, 12, 28);
+    private final LocalDate movieDay = LocalDate.of(1895, 12, 28);
     private int id = 1;
 
     public Map<Integer, Film> getAllFilms() {
@@ -62,7 +62,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.error("Описание пустое или состоит из пробелов.");
             throw new ValidationException("Описание не должно быть пустым или состоять из пробелов.");
         }
-        if (film.getReleaseDate().isBefore(movieBirthday)) {
+        if (film.getReleaseDate().isBefore(movieDay)) {
             log.error("Дата выхода фильма в прокат не может быть раньше 28.12.1895.");
             throw new ValidationException("Дата выхода фильма в прокат не может быть раньше 28.12.1895.");
         }
