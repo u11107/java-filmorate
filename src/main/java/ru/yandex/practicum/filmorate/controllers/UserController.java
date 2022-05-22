@@ -1,64 +1,56 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
 @Slf4j
 @RestController
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final UserService userService;
 
-    private final Map<Integer, User> users = new HashMap<>();
-    int id = 1;
+    private final UserStorage userStorage;
 
-    @GetMapping("/users")
-    public Map<Integer, User> getAllFilm() throws ValidationException {
-        log.info("Количство пользователей {}", users.size());
-        return users;
+    @GetMapping
+    public Collection<User> allUsers() {
+        return userStorage.getAllUsers().values();
     }
 
-    @PostMapping(value = "/users")
-    public User addUser(@Valid @RequestBody User user) throws ValidationException {
-        validate(user); // проверка даты рождения пользователя
-        user.setId(id++);
-        log.info("Пользователь {} успешно добавлен", user.getLogin());
-        users.put(user.getId(), user);
-        return user;
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Integer id) {
+        return userStorage.getBiUserId(id);
     }
 
-    @PutMapping(value = "/users")
-    public User update(@Valid @RequestBody User user) throws ValidationException {
-        log.error(String.valueOf((user)));
-        validate(user);
-        users.put(user.getId(), user);
-        log.info("Добавлен пользователь");
-        return user;
+    @PostMapping
+    public User add(@Valid @RequestBody User user) {
+        return userStorage.createUser(user);
     }
 
-    public void validate(User user) {
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Логин {} содержит пробелы или пустой", user.getLogin());
-            throw new ValidationException("Логин содержит пробелы или пустой");
-        }
-        if (user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.error("Ошибка  email '{}'", user.getEmail());
-            throw new ValidationException("Ошибка формата email");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Ошибка даты рождения '{}'", user.getBirthday());
-            throw new ValidationException("Ошибка в поле дата рождения");
-        }
+    @PutMapping
+    public User update(@Valid @RequestBody User user) {
+        return userStorage.updateUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addToFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        return userService.addFriends(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFromFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.removeFriends(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getUserFriends(@PathVariable Integer id) {
+        return userService.getFriends(id);
     }
 }

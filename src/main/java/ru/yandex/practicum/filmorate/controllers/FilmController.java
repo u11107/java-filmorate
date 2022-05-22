@@ -1,54 +1,55 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+
+import java.util.Collection;
 
 @Slf4j
+@RequestMapping("/films")
 @RestController
+@RequiredArgsConstructor
 public class FilmController {
-    private final Map<Integer, Film> movie = new HashMap<>();
-    @Getter
-    private static final LocalDate EARLY_DATE = LocalDate.of(1900, 1, 1);
-    private Integer id = 1;
+    private final FilmService filmService;
+    private final FilmStorage filmStorage;
 
-    @GetMapping("/films")
-    public Map<Integer, Film> getAllFilm() throws ValidationException {
-        log.info("Количство фильмов {}", movie.size());
-        return movie;
+    @GetMapping
+    public Collection<Film> allFilms() {
+        return filmStorage.getAllFilms().values();
     }
 
-    @PostMapping(value = "/films")
-    public Film addFilm(@Valid @RequestBody Film film) throws ValidationException {
-        validation(film);
-        film.setId(id++);
-        movie.put(film.getId(), film);
-        log.info("Добавлен новый фильм {}, id={}", film.getName(), film.getId());
-        return film;
+    @PostMapping
+    public Film add(@RequestBody Film film) {
+        return filmStorage.createFilm(film);
     }
 
-    @PutMapping(value = "/films")
-    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
-        validation(film);
-        movie.put(film.getId(), film);
-        log.info("Фильм перзеписан");
-        return film;
+    @PutMapping
+    public Film update(@RequestBody Film film) {
+        return filmStorage.updateFilm(film);
     }
 
-    public void validation(Film film) {
-        if (film.getReleaseDate().isBefore(getEARLY_DATE())) {
-            log.warn("Произошла ошибка  при создании фильма");
-            throw new ValidationException("Тогда еще не было фильмов");
-        }
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getTopTenFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getTopTenFilms(count);
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable Integer id) {
+        return filmStorage.getFilmById(id);
     }
 }
