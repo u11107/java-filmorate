@@ -23,53 +23,53 @@ public class FilmService {
     }
 
     public Map<Integer, Film> allFilms() {
-        return filmStorage.allFilms();
+        return filmStorage.getAllFilms();
     }
 
-    public Film add(Film film) {
-        return filmStorage.add(film);
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
     }
 
-    public Film update(Film film) {
-        return filmStorage.update(film);
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
     }
 
-    public void remove(Integer id) {
-        filmStorage.remove(id);
+    public void removeFilm(Integer id) {
+        filmStorage.removeFilm(id);
     }
 
     public void addLike(Integer filmId, Integer userId) {
-        if (!filmStorage.allFilms().containsKey(filmId)) {
+        if (!filmStorage.getAllFilms().containsKey(filmId)) {
             throw new NotFoundException("фильм" + filmId);
         }
-        filmStorage.allFilms().get(filmId).getLikes().add(userId);
+        filmStorage.getAllFilms().get(filmId).getLikes().add(userId);
     }
 
     public void removeLike(Integer filmId, Integer userId) {
-        if (!filmStorage.allFilms().containsKey(filmId)) {
+        if (!filmStorage.getAllFilms().containsKey(filmId)) {
             throw new NotFoundException("фильм" + filmId);
         }
         if (!getFilm(filmId).getLikes().contains(userId)) {
             throw new NotFoundException("лайк пользователя " + userId);
         }
-        filmStorage.allFilms().get(filmId).getLikes().remove(userId);
+        filmStorage.getAllFilms().get(filmId).getLikes().remove(userId);
     }
 
     public Collection<Film> getTopTenFilms(Integer count) {
-        if (count > 0 && count < filmStorage.allFilms().size()) {
-            return filmStorage.allFilms().values().stream()
+        if (count > 0 && count < filmStorage.getAllFilms().size()) {
+            return filmStorage.getAllFilms().values().stream()
                     .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
                     .limit(count).collect(Collectors.toList());
         }
-        return filmStorage.allFilms().values().stream()
+        return filmStorage.getAllFilms().values().stream()
                 .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
-                .limit(filmStorage.allFilms().size()).collect(Collectors.toList());
+                .limit(filmStorage.getAllFilms().size()).collect(Collectors.toList());
     }
 
     public Film getFilm(Integer id) {
-        if (!filmStorage.allFilms().containsKey(id)) {
+        if (!filmStorage.getAllFilms().containsKey(id)) {
             throw new NotFoundException("фильм" + id);
         }
-        return filmStorage.allFilms().get(id);
+        return filmStorage.getAllFilms().get(id);
     }
 }

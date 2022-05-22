@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> allUsers() {
-        return userService.allUsers().values();
+        return userService.getAllUsers().values();
     }
 
     @GetMapping("/{id}")
@@ -38,12 +38,12 @@ public class UserController {
 
     @PostMapping
     public User add(@Valid @RequestBody User user) {
-        return userService.add(user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        return userService.update(user);
+        return userService.updateUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
