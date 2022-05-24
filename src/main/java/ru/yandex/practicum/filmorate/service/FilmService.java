@@ -57,11 +57,11 @@ public class FilmService {
     public Collection<Film> getTopTenFilms(Integer count) {
         if (count > 0 && count < filmStorage.getAllFilms().size()) {
             return filmStorage.getAllFilms().values().stream()
-                    .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
+                    .sorted((film1, film2) -> Integer.compare(film2.getLikes().size(), film1.getLikes().size()))
                     .limit(count).collect(Collectors.toList());
         }
         return filmStorage.getAllFilms().values().stream()
-                .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
+                .sorted((film1, film2) -> Integer.compare(film2.getLikes().size(), film1.getLikes().size()))
                 .limit(filmStorage.getAllFilms().size()).collect(Collectors.toList());
     }
 
