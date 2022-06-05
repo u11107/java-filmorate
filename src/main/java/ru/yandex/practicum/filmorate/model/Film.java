@@ -24,6 +24,10 @@ public class Film {
     @NonNull
     private Integer duration;
     private Set<Integer> likes;
+    private Genre genre;
+    private Rating rating;
+
+
 
     public Film(Integer id, String name, String description, LocalDate releaseDate, Integer duration) {
         this.id = id;

@@ -64,7 +64,7 @@ public class UserService {
             throw new NotFoundException("пользователь " + id);
         }
         Set<Integer> userSet = userStorage.getAllUsers().get(id).getFriends();
-        for (Integer user : userSet) {
+        for (var user : userSet) {
             friends.add(userStorage.getAllUsers().get(user));
         }
         return friends;
@@ -80,7 +80,7 @@ public class UserService {
         }
         Set<Integer> userSet = userStorage.getAllUsers().get(id).getFriends();
         Set<Integer> userSet1 = userStorage.getAllUsers().get(id1).getFriends();
-        for (Integer user : userSet) {
+        for (var user : userSet) {
             if (userSet1.contains(user)) {
                 friendsNames.add(userStorage.getAllUsers().get(user));
             }
