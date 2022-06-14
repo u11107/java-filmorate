@@ -26,7 +26,7 @@ public class User {
     private LocalDate birthday;
     private Set<Integer> friends;
 
-    private Status status;
+    private boolean status;
 
 
     public User(Integer id, String email, String login, String name, LocalDate birthday) {

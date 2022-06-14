@@ -25,7 +25,7 @@ public class Film {
     private Integer duration;
     private Set<Integer> likes;
     private Genre genre;
-    private Rating rating;
+    private Rating mpa;
 
 
 
