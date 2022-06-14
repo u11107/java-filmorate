@@ -26,6 +26,7 @@ public class Film {
     private Set<Integer> likes;
     private Genre genre;
     private Rating mpa;
+     private String lastName;
 
 
 
