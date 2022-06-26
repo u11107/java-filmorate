@@ -2,96 +2,83 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Friends;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 public class UserService {
+
     private final UserStorage userStorage;
+    private final FriendsStorage friendsStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendsStorage friendsStorage) {
         this.userStorage = userStorage;
+        this.friendsStorage = friendsStorage;
     }
 
-    public Map<Integer, User> getAllUsers() {
-        return userStorage.getAllUsers();
+    // поиск общих друзей для двух пользователей
+    public Set<Long> getCommonFriends(Long user1, Long user2) {
+        if (friendsStorage.getFriends(Math.
+                toIntExact(user1)) == null || friendsStorage.getFriends(Math.
+                toIntExact(user2)) == null) {
+            return new HashSet<>();
+        }
+        return findFriendsById(user1).stream()
+                .distinct()
+                .filter(findFriendsById(user2)::contains)
+                .collect(Collectors.toSet());
     }
 
-    public User addUser(User user) {
+    // получение всех пользователей
+    public Collection<User> getAllUsers() {
+        return (Collection<User>) userStorage.getAllUsers();
+    }
+
+    // создание пользователя
+    public User createUser(User user) {
         return userStorage.addUser(user);
     }
 
+    // обновление пользователя
     public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
 
-    public User addToFriends(Integer id, Integer friendId) {
-        Map<Integer, User> userMap = userStorage.getAllUsers();
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            throw new NotFoundException("пользователь" + id);
-        }
-        if (!userStorage.getAllUsers().containsKey(friendId)) {
-            throw new NotFoundException("пользователь" + friendId);
-        }
-        userMap.get(id).getFriends().add(friendId);
-        userMap.get(friendId).getFriends().add(id);
-        return getUser(friendId);
+    // удаление пользователя
+    public void deleteUser(Long id) {
+        userStorage.deleteUser(id);
     }
 
-    public void removeFromFriends(Integer id, Integer removeFromId) {
-        Map<Integer, User> userMap = userStorage.getAllUsers();
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            throw new NotFoundException("пользователь" + id);
-        }
-        if (!userStorage.getAllUsers().containsKey(removeFromId)) {
-            throw new NotFoundException("пользователь" + removeFromId);
-        }
-        userMap.get(id).getFriends().remove(removeFromId);
-        userMap.get(removeFromId).getFriends().remove(id);
+    // поиск по id
+    public User findUserById(Long id) {
+        return userStorage.getUser(id);
     }
 
-    public Collection<User> getUserFriends(Integer id) {
-        List<User> friends = new ArrayList<>();
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            throw new NotFoundException("пользователь " + id);
-        }
-        Set<Integer> userSet = userStorage.getAllUsers().get(id).getFriends();
-        for (var user : userSet) {
-            friends.add(userStorage.getAllUsers().get(user));
-        }
-        return friends;
+    // получение списка друзей
+    public Collection<Long> findFriendsById(Long id) {
+        return friendsStorage.getFriends(id);
     }
 
-    public Collection<User> getMutualFriends(Integer id, Integer id1) {
-        List<User> friendsNames = new ArrayList<>();
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            throw new NotFoundException("пользователь " + id);
-        }
-        if (!userStorage.getAllUsers().containsKey(id1)) {
-            throw new NotFoundException("пользователь " + id1);
-        }
-        Set<Integer> userSet = userStorage.getAllUsers().get(id).getFriends();
-        Set<Integer> userSet1 = userStorage.getAllUsers().get(id1).getFriends();
-        for (var user : userSet) {
-            if (userSet1.contains(user)) {
-                friendsNames.add(userStorage.getAllUsers().get(user));
-            }
-        }
-        return friendsNames;
+    // добавление дружбы
+    public void addFriend(Long id, Long friendId) {
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
+        friendsStorage.addFriend(Friends.builder().user(user).friend(friend).build());
     }
 
-    public User getUser(Integer id) {
-        if (!userStorage.getAllUsers().containsKey(id)) {
-            throw new NotFoundException("пользователь " + id);
-        }
-        return userStorage.getAllUsers().get(id);
+    // удаление дружбы
+    public void removeFriend(Long id, Long friendId) {
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
+        friendsStorage.deleteFriend(Friends.builder().user(user).friend(friend).build());
     }
 }

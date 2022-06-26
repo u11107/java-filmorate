@@ -5,9 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Rating {
-
-    private int id;
-    private String name;
-
+public class Like {
+    Film film;
+    User user;
 }

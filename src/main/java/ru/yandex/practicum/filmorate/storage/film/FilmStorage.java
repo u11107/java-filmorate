@@ -1,15 +1,25 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import java.util.Map;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
+
+import java.util.Collection;
+import java.util.List;
 public interface FilmStorage {
 
-//  Получение всех фильмов
-    Map<Integer, Film> getAllFilms();
-//  Добавление фильма
+    // добавление фильма
     Film addFilm(Film film);
-//  Обновление данных о фильме
+    // обновление фильма
     Film updateFilm(Film film);
-//  Удаление фильма
-    void removeFilm(Integer id);
+    // удаление фильма
+    void deleteFilm(long id);
+    // поиск фильма
+    Film getFilm(long id);
+    // список всех фильмов
+    List<Film> getAllFilms();
+    // список жанров
+    Collection<Genre> getGenre(Integer id);
+    // список рейтингов mpaa
+    Collection<Rating> getRating(Integer id);
 }
